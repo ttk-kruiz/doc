@@ -1,0 +1,74 @@
+<!doctype html>
+<!--
+  Transp_IP_Chek — веб-приложение документооборота ИП (счета, акты, договоры) на Google-таблице
+  © Ирина Мальцева | maltsevaie@gmail.com
+  Все права защищены. Копирование и распространение без разрешения автора запрещено.
+
+  index.html — короткая ссылка и иконка клиента (ТТК Круиз). Публикуется в iLazovichGT/ttk-docs (GitHub Pages). Образец — tools/wrapper/demo.html.
+  Приложение открывается ВНУТРИ этой страницы (iframe) — адрес в строке остаётся коротким, на iPhone с иконки нет панелей Safari.
+  Запасной переход: вход через Google (USER_ACCESSING) в чужой рамке может не пройти (не вошли, нужно «Разрешить»,
+  Safari не пускает куки Google в рамку). Приложение при запуске шлёт {tkdocs:'ready'} (00_index.html); не пришло
+  за READY_MS — переходим на длинный адрес, как раньше, и запоминаем на устройстве на NO_FRAME_DAYS, чтобы не ждать каждый раз.
+  ?install — не открывать, показать, как добавить иконку. ?direct — сразу длинный адрес (например, чтобы нажать «Разрешить»).
+-->
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Документы ТТК Круиз</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ТТК Круиз">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0A7F78">
+<style>
+  :root { --bg:#EEF1F4; --fg:#1D1F22; --fg2:#4A5057; --fill:#0A7F78; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0E1416; --fg:#EFF4F5; --fg2:#B2BFC2; } }
+  html, body { height:100%; }
+  body { margin:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; padding:24px;
+    box-sizing:border-box; background:var(--bg); color:var(--fg); font:17px/1.45 -apple-system,"Segoe UI",sans-serif; text-align:center; overflow:hidden; }
+  img { width:88px; height:88px; border-radius:20px; background:#fff; }
+  a { color:var(--fill); font-weight:600; }
+  p { color:var(--fg2); max-width:420px; margin:0; }
+  .ring { width:40px; height:40px; border-radius:50%; border:4px solid rgba(10,127,120,.2); border-top-color:var(--fill); animation:spin .8s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  #app { position:fixed; inset:0; width:100%; height:100%; border:0; z-index:10; background:transparent; }
+</style>
+</head>
+<body>
+<img src="icon-180.png" alt="">
+<h1 style="margin:0;font-size:22px">Документы ТТК Круиз</h1>
+<div class="ring" id="ring"></div>
+<p id="tip" hidden>Чтобы иконка была на телефоне: в Safari нажмите «Поделиться» → «На экран „Домой“».<br><br><a id="open" href="#">Открыть программу</a></p>
+<script>
+  var APP = 'https://script.google.com/macros/s/AKfycbyptM-jfa02yEamDBrGPeYTgQSdru3FX1AAtQpOGEbzKbuvV6blfRNBbYH5ehYSZ0Xr/exec';
+  var READY_MS = 9000, NO_FRAME_DAYS = 3, KEY = 'ttkdocs_noframe';
+  var q = location.search;
+  document.getElementById('open').href = APP;
+  function direct() { location.replace(APP); }
+  function store(v) { try { if (v) localStorage.setItem(KEY, String(Date.now())); else localStorage.removeItem(KEY); } catch (e) {} }
+  function noFrame() { try { var t = Number(localStorage.getItem(KEY) || 0); return t && Date.now() - t < NO_FRAME_DAYS * 86400000; } catch (e) { return false; } }
+
+  if (/[?&]install/.test(q)) { document.getElementById('tip').hidden = false; document.getElementById('ring').hidden = true; }
+  else if (/[?&]direct/.test(q) || noFrame()) direct();
+  else {
+    var ok = false;
+    window.addEventListener('message', function (ev) {
+      // только от Google, где живёт приложение
+      if (!(ev.origin === 'https://script.google.com' || /^https:\/\/[^\/]+\.googleusercontent\.com$/.test(ev.origin))) return;
+      var d = ev.data || {};
+      if (d.tkdocs === 'ready') { ok = true; store(false); }
+      if (d.tkdocs === 'reload') location.reload();
+    });
+    var f = document.createElement('iframe');
+    f.id = 'app';
+    f.setAttribute('allow', 'web-share; clipboard-write; fullscreen');
+    f.src = APP + '?w=1';
+    document.body.appendChild(f);
+    setTimeout(function () { if (!ok) { store(true); direct(); } }, READY_MS);
+  }
+</script>
+</body>
+</html>
