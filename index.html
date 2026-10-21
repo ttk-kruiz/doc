@@ -4,7 +4,7 @@
   © Ирина Мальцева | maltsevaie@gmail.com
   Все права защищены. Копирование и распространение без разрешения автора запрещено.
 
-  index.html — короткая ссылка и иконка клиента (ТТК Круиз). Публикуется в iLazovichGT/ttk-docs (GitHub Pages). Образец — tools/wrapper/demo.html.
+  index.html — короткая ссылка и иконка клиента (ТТК Круиз). Публикуется в ttk-kruiz/doc (GitHub Pages) → https://ttk-kruiz.github.io/doc/. Образец — tools/wrapper/demo.html.
   Приложение открывается ВНУТРИ этой страницы (iframe) — адрес в строке остаётся коротким, на iPhone с иконки нет панелей Safari.
   Запасной переход: вход через Google (USER_ACCESSING) в чужой рамке может не пройти (не вошли, нужно «Разрешить»,
   Safari не пускает куки Google в рамку). Приложение при запуске шлёт {tkdocs:'ready'} (00_index.html); не пришло
@@ -44,7 +44,7 @@
 <p id="tip" hidden>Чтобы иконка была на телефоне: в Safari нажмите «Поделиться» → «На экран „Домой“».<br><br><a id="open" href="#">Открыть программу</a></p>
 <script>
   var APP = 'https://script.google.com/macros/s/AKfycbyptM-jfa02yEamDBrGPeYTgQSdru3FX1AAtQpOGEbzKbuvV6blfRNBbYH5ehYSZ0Xr/exec';
-  var READY_MS = 9000, NO_FRAME_DAYS = 3, KEY = 'ttkdocs_noframe';
+  var READY_MS = 25000, NO_FRAME_DAYS = 1, KEY = 'ttkdocs_noframe2';   // первый запуск Google за день бывает долгим (21.10: 9 с не хватило)
   var q = location.search;
   document.getElementById('open').href = APP;
   function direct() { location.replace(APP); }
