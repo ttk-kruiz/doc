@@ -66,6 +66,9 @@
     f.id = 'app';
     f.setAttribute('allow', 'web-share; clipboard-write; fullscreen');
     f.src = APP + '?w=1';
+    // страница в рамке загрузилась, а «готово» нет — значит, это ошибка Google (401 на телефоне: браузер не пускает вход Google
+    // в чужую рамку), а не долгий запуск: не ждём 25 с, сразу на длинный адрес
+    f.addEventListener('load', function () { setTimeout(function () { if (!ok) { store(true); direct(); } }, 8000); });
     document.body.appendChild(f);
     setTimeout(function () { if (!ok) { store(true); direct(); } }, READY_MS);
   }
